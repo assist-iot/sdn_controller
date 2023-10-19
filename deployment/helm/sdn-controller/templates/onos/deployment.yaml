@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "onos.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "onos.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.onos.autoscaling.enabled }}
+  replicas: {{ .Values.onos.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "onos.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "onos.labels" . | nindent 8 }}
+    spec:
+      {{- with .Values.onos.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.enablerNodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if not .Values.enablerNodeSelector }}
+        {{- with .Values.onos.nodeSelector }}
+      nodeSelector:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.onos.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.onos.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.onos.podSecurityContext | nindent 8 }}
+      containers:
+        - name: onos
+          securityContext:
+            {{- toYaml .Values.onos.securityContext | nindent 12 }}
+          image: "{{ .Values.onos.image.repository }}:{{ .Values.onos.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.onos.image.pullPolicy }}
+          ports:
+            - name: onoswww
+              containerPort: {{ .Values.onos.service.ports.onoswww.containerPort }}
+              protocol: {{ .Values.onos.service.ports.onoswww.protocol }}
+            - name: onoscli
+              containerPort: {{ .Values.onos.service.ports.onoscli.containerPort }}
+              protocol: {{ .Values.onos.service.ports.onoscli.protocol }}
+            - name: intracltcp
+              containerPort: {{ .Values.onos.service.ports.intracltcp.containerPort }}
+              protocol: {{ .Values.onos.service.ports.intracltcp.protocol }}
+            - name: intracludp
+              containerPort: {{ .Values.onos.service.ports.intracludp.containerPort }}
+              protocol: {{ .Values.onos.service.ports.intracludp.protocol }}
+            - name: sflow
+              containerPort: {{ .Values.onos.service.ports.sflow.containerPort }}
+              protocol: {{ .Values.onos.service.ports.sflow.protocol }}
+            - name: ssh
+              containerPort: {{ .Values.onos.service.ports.ssh.containerPort }}
+              protocol: {{ .Values.onos.service.ports.ssh.protocol }}
+          resources:
+            {{- toYaml .Values.onos.resources | nindent 12 }}
+          {{- with .Values.onos.envVars }}
+          env:
+            - name: EXAMPLE_ENV_VAR
+              value: {{ .exampleEnvVar | quote }}
+          {{- end }}

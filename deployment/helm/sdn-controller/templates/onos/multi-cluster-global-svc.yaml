@@ -1,0 +1,37 @@
+{{- if .Values.globalService }}
+apiVersion: assist.eu/v1
+kind: MultiClusterService
+metadata:
+  name: {{ include "onos.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  annotations:
+    io.cilium/global-service: "true"
+  labels:
+    {{- include "onos.labels" . | nindent 4 }}
+spec:
+  ports:
+    - name: onoswww
+      port: {{ .Values.onos.service.ports.onoswww.port }}
+      targetPort: {{ .Values.onos.service.ports.onoswww.targetPort }}
+      protocol: {{ .Values.onos.service.ports.onoswww.protocol }}
+    - name: onoscli
+      port: {{ .Values.onos.service.ports.onoscli.port }}
+      targetPort: {{ .Values.onos.service.ports.onoscli.targetPort }}
+      protocol: {{ .Values.onos.service.ports.onoscli.protocol }}
+    - name: intracltcp
+      port: {{ .Values.onos.service.ports.intracltcp.port }}
+      targetPort: {{ .Values.onos.service.ports.intracltcp.targetPort }}
+      protocol: {{ .Values.onos.service.ports.intracltcp.protocol }}
+    - name: intracludp
+      port: {{ .Values.onos.service.ports.intracludp.port }}
+      targetPort: {{ .Values.onos.service.ports.intracludp.targetPort }}
+      protocol: {{ .Values.onos.service.ports.intracludp.protocol }}
+    - name: sflow
+      port: {{ .Values.onos.service.ports.sflow.port }}
+      targetPort: {{ .Values.onos.service.ports.sflow.targetPort }}
+      protocol: {{ .Values.onos.service.ports.sflow.protocol }}
+    - name: ssh
+      port: {{ .Values.onos.service.ports.ssh.port }}
+      targetPort: {{ .Values.onos.service.ports.ssh.targetPort }}
+      protocol: {{ .Values.onos.service.ports.ssh.protocol }}
+{{- end }}
