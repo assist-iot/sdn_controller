@@ -19,9 +19,9 @@ onos:
   # Configuration of the container image.
   imagePullSecrets: []
   image:
-    repository: gitlab.assist-iot.eu:5050/enablers-registry/public/sdn-controller
+    repository: docker.io/assistiot/sdn_controller
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "0.1.0"
+    tag: "2.4.0"
     pullPolicy: IfNotPresent
   
   # Configuration of the service: type and ports.
