@@ -215,7 +215,7 @@ The easiest method of ONOS installation is based on usage created within Assist-
 
 ```sh
 git clone https://github.com/assist-iot/sdn_controller.git
-cd deployment/helm/ 
+cd sdn-controller/deployment/helm/ 
 helm install onos ./sdn-controller
 ```
 
